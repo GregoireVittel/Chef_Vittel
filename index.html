@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banana Bread Recipe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23f4e4c1" width="1200" height="800"/><circle cx="200" cy="150" r="80" fill="%23d4a574" opacity="0.3"/><circle cx="900" cy="600" r="120" fill="%23d4a574" opacity="0.2"/><rect x="50" y="400" width="200" height="300" fill="%238b6f47" opacity="0.3"/><rect x="800" y="100" width="150" height="250" fill="%238b6f47" opacity="0.2"/></svg>');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #2c1810;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 250, 240, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #d4a574;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background: #8b6f47;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #6d5635;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button.active {
+            background: #d4a574;
+            color: #2c1810;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #8b6f47;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #6d5635;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #8b6f47;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #d4a574;
+            padding-bottom: 10px;
+        }
+
+        .recipe-info {
+            display: flex;
+            justify-content: space-around;
+            background: #f9f3e6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #d4a574;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-item .label {
+            font-weight: bold;
+            color: #8b6f47;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .info-item .value {
+            font-size: 1.3em;
+            color: #2c1810;
+            margin-top: 5px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        li:before {
+            content: "🥄";
+            position: absolute;
+            left: 0;
+        }
+
+        .instructions li {
+            counter-increment: step-counter;
+            padding-left: 40px;
+        }
+
+        .instructions li:before {
+            content: counter(step-counter);
+            background: #d4a574;
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+            position: absolute;
+            left: 0;
+        }
+
+        .instructions {
+            counter-reset: step-counter;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .recipe-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <div class="control-group">
+                <button onclick="setLanguage('en')" id="btn-en" class="active">English</button>
+                <button onclick="setLanguage('pl')" id="btn-pl">Polski</button>
+            </div>
+            <div class="control-group">
+                <button onclick="setUnit('metric')" id="btn-metric" class="active">Metric</button>
+                <button onclick="setUnit('imperial')" id="btn-imperial">Imperial</button>
+            </div>
+        </div>
+
+        <h1 id="title">Banana Bread</h1>
+        <p class="subtitle" id="subtitle">A delicious homemade treat</p>
+
+        <div class="recipe-info">
+            <div class="info-item">
+                <div class="label" id="label-temp">Temperature</div>
+                <div class="value" id="value-temp">180°C</div>
+            </div>
+            <div class="info-item">
+                <div class="label" id="label-time">Baking Time</div>
+                <div class="value" id="value-time">45 min</div>
+            </div>
+        </div>
+
+        <h2 id="ingredients-title">Ingredients</h2>
+        <ul id="ingredients-list"></ul>
+
+        <h2 id="instructions-title">Instructions</h2>
+        <ul class="instructions" id="instructions-list"></ul>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                title: "Banana Bread",
+                subtitle: "A delicious homemade treat",
+                ingredientsTitle: "Ingredients",
+                instructionsTitle: "Instructions",
+                labelTemp: "Temperature",
+                labelTime: "Baking Time",
+                ingredients: {
+                    metric: [
+                        "3 large or 4 small ripe bananas (preferably overripe), mashed",
+                        "75 g melted butter",
+                        "½ glass (about 50g) fine sugar for baking",
+                        "1 large egg",
+                        "1 teaspoon baking soda",
+                        "Pinch of salt",
+                        "1.5 cups (about 190g) wheat flour",
+                        "1 teaspoon vanilla extract"
+                    ],
+                    imperial: [
+                        "3 large or 4 small ripe bananas (preferably overripe), mashed",
+                        "⅓ cup (5 tbsp) melted butter",
+                        "¼ cup fine sugar for baking",
+                        "1 large egg",
+                        "1 teaspoon baking soda",
+                        "Pinch of salt",
+                        "1.5 cups wheat flour",
+                        "1 teaspoon vanilla extract"
+                    ]
+                },
+                instructions: [
+                    "Preheat the oven to {temp} and line or grease a loaf pan.",
+                    "Mash the ripe bananas in a bowl, then add the melted butter and mix until combined.",
+                    "In a separate bowl, whisk the sugar with the egg until well mixed, then combine this with the banana-butter mixture.",
+                    "In another bowl, mix together the flour, baking soda, and salt.",
+                    "Add the dry ingredients to the wet mixture and stir gently just until everything is incorporated, without overmixing. Stir in the vanilla extract.",
+                    "Pour the batter into the prepared pan and bake for about 45 minutes, or until a toothpick inserted in the center comes out clean.",
+                    "Allow to cool in the pan for 10 minutes, then transfer to a wire rack to cool completely before slicing."
+                ],
+                temp: {
+                    metric: "180°C",
+                    imperial: "350°F"
+                }
+            },
+            pl: {
+                title: "Chlebek Bananowy",
+                subtitle: "Pyszny domowy przysmak",
+                ingredientsTitle: "Składniki",
+                instructionsTitle: "Przygotowanie",
+                labelTemp: "Temperatura",
+                labelTime: "Czas pieczenia",
+                ingredients: {
+                    metric: [
+                        "3 duże lub 4 mniejsze dojrzałe banany (najlepiej przejrzałe), rozgniecione",
+                        "75 g masła, roztopionego",
+                        "½ szklanki (około 50g) drobnego cukru do wypieków",
+                        "1 duże jajko",
+                        "1 łyżeczka sody oczyszczonej",
+                        "Szczypta soli",
+                        "1,5 szklanki (około 190g) mąki pszennej",
+                        "1 łyżeczka ekstraktu z wanilii"
+                    ],
+                    imperial: [
+                        "3 duże lub 4 mniejsze dojrzałe banany (najlepiej przejrzałe), rozgniecione",
+                        "⅓ filiżanki (5 łyżek) roztopionego masła",
+                        "¼ filiżanki drobnego cukru do wypieków",
+                        "1 duże jajko",
+                        "1 łyżeczka sody oczyszczonej",
+                        "Szczypta soli",
+                        "1,5 filiżanki mąki pszennej",
+                        "1 łyżeczka ekstraktu z wanilii"
+                    ]
+                },
+                instructions: [
+                    "Rozgrzej piekarnik do {temp} i wyłóż lub nasmaruj formę do chleba.",
+                    "Rozgnieć dojrzałe banany w misce, następnie dodaj roztopione masło i wymieszaj do połączenia.",
+                    "W osobnej misce ubij cukier z jajkiem, aż będzie dobrze wymieszany, następnie połącz to z mieszanką bananowo-maślaną.",
+                    "W innej misce wymieszaj razem mąkę, sodę oczyszczoną i sól.",
+                    "Dodaj suche składniki do mokrej mieszanki i delikatnie mieszaj, aż wszystko się połączy, nie mieszając zbyt długo. Dodaj ekstrakt waniliowy.",
+                    "Wlej ciasto do przygotowanej formy i piecz przez około 45 minut, lub do momentu, gdy patyczek wbity w środek wyjdzie suchy.",
+                    "Pozostaw do ostygnięcia w formie przez 10 minut, następnie przenieś na kratkę do całkowitego ostygnięcia przed krojeniem."
+                ],
+                temp: {
+                    metric: "180°C",
+                    imperial: "350°F"
+                }
+            }
+        };
+
+        let currentLang = 'en';
+        let currentUnit = 'metric';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-pl').classList.toggle('active', lang === 'pl');
+            updateContent();
+        }
+
+        function setUnit(unit) {
+            currentUnit = unit;
+            document.getElementById('btn-metric').classList.toggle('active', unit === 'metric');
+            document.getElementById('btn-imperial').classList.toggle('active', unit === 'imperial');
+            updateContent();
+        }
+
+        function updateContent() {
+            const t = translations[currentLang];
+
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('ingredients-title').textContent = t.ingredientsTitle;
+            document.getElementById('instructions-title').textContent = t.instructionsTitle;
+            document.getElementById('label-temp').textContent = t.labelTemp;
+            document.getElementById('label-time').textContent = t.labelTime;
+            document.getElementById('value-temp').textContent = t.temp[currentUnit];
+
+            const ingredientsList = document.getElementById('ingredients-list');
+            ingredientsList.innerHTML = '';
+            t.ingredients[currentUnit].forEach(ingredient => {
+                const li = document.createElement('li');
+                li.textContent = ingredient;
+                ingredientsList.appendChild(li);
+            });
+
+            const instructionsList = document.getElementById('instructions-list');
+            instructionsList.innerHTML = '';
+            t.instructions.forEach(instruction => {
+                const li = document.createElement('li');
+                li.textContent = instruction.replace('{temp}', t.temp[currentUnit]);
+                instructionsList.appendChild(li);
+            });
+        }
+
+        updateContent();
+    </script>
+</body>
+</html>
