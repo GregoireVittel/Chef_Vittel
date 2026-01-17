@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiramisu Recipe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23f5e6d3" width="1200" height="800"/><circle cx="150" cy="200" r="100" fill="%23d4a574" opacity="0.3"/><circle cx="1000" cy="500" r="150" fill="%238b4513" opacity="0.2"/><rect x="100" y="500" width="180" height="250" fill="%236b4423" opacity="0.3"/><rect x="900" y="150" width="200" height="200" fill="%23a0826d" opacity="0.2"/></svg>');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #3d2817;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 250, 245, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #c19a6b;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background: #8b4513;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: #6b3410;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button.active {
+            background: #c19a6b;
+            color: #3d2817;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #8b4513;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #6b3410;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #8b4513;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #c19a6b;
+            padding-bottom: 10px;
+        }
+
+        .recipe-info {
+            display: flex;
+            justify-content: space-around;
+            background: #faf5f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #c19a6b;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-item .label {
+            font-weight: bold;
+            color: #8b4513;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .info-item .value {
+            font-size: 1.3em;
+            color: #3d2817;
+            margin-top: 5px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        li:before {
+            content: "☕";
+            position: absolute;
+            left: 0;
+        }
+
+        .instructions li {
+            counter-increment: step-counter;
+            padding-left: 40px;
+        }
+
+        .instructions li:before {
+            content: counter(step-counter);
+            background: #c19a6b;
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+            position: absolute;
+            left: 0;
+        }
+
+        .instructions {
+            counter-reset: step-counter;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .recipe-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            button {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .control-group {
+                gap: 5px;
+            }
+
+            .controls {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="tiramisu.jpg" alt="Tiramisu dessert" class="hero-image">
+
+        <div class="controls">
+            <div class="control-group">
+                <button onclick="setLanguage('en')" id="btn-en">English</button>
+                <button onclick="setLanguage('pl')" id="btn-pl" class="active">Polski</button>
+            </div>
+            <div class="control-group">
+                <button onclick="setUnit('metric')" id="btn-metric" class="active">Metric</button>
+                <button onclick="setUnit('imperial')" id="btn-imperial">Imperial</button>
+            </div>
+        </div>
+
+        <h1 id="title">Tiramisu</h1>
+        <p class="subtitle" id="subtitle">Classic Italian dessert</p>
+
+        <div class="recipe-info">
+            <div class="info-item">
+                <div class="label" id="label-servings">Servings</div>
+                <div class="value" id="value-servings">6-8</div>
+            </div>
+            <div class="info-item">
+                <div class="label" id="label-time">Prep Time</div>
+                <div class="value" id="value-time">30 min</div>
+            </div>
+            <div class="info-item">
+                <div class="label" id="label-chill">Chill Time</div>
+                <div class="value" id="value-chill">4 hrs</div>
+            </div>
+        </div>
+
+        <h2 id="ingredients-title">Ingredients</h2>
+        <ul id="ingredients-list"></ul>
+
+        <h2 id="instructions-title">Instructions</h2>
+        <ul class="instructions" id="instructions-list"></ul>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                title: "Tiramisu",
+                subtitle: "Classic Italian dessert",
+                ingredientsTitle: "Ingredients",
+                instructionsTitle: "Instructions",
+                labelServings: "Servings",
+                labelTime: "Prep Time",
+                labelChill: "Chill Time",
+                ingredients: {
+                    metric: [
+                        "500 g mascarpone cheese",
+                        "4 large eggs",
+                        "100 g sugar",
+                        "200 g ladyfinger biscuits (savoiardi)",
+                        "250 ml espresso coffee (3 teaspoons instant coffee or 3 espresso shots)",
+                        "2 tablespoons Amaretto liqueur or rum (optional)",
+                        "Cocoa powder for dusting"
+                    ],
+                    imperial: [
+                        "17.6 oz (about 2 cups) mascarpone cheese",
+                        "4 large eggs",
+                        "½ cup sugar",
+                        "7 oz ladyfinger biscuits (savoiardi)",
+                        "1 cup espresso coffee (3 teaspoons instant coffee or 3 espresso shots)",
+                        "2 tablespoons Amaretto liqueur or rum (optional)",
+                        "Cocoa powder for dusting"
+                    ]
+                },
+                instructions: [
+                    "Separate the egg whites from the yolks into two different bowls.",
+                    "Whisk the egg whites to stiff peaks, gradually adding half of the sugar (50g) while whisking.",
+                    "In a separate bowl, mix the egg yolks with the remaining sugar and mascarpone cheese until you get a smooth, creamy mixture.",
+                    "Gently fold the whipped egg whites into the yolk-mascarpone mixture, stirring from top to bottom to maintain the fluffy texture.",
+                    "Prepare the coffee and let it cool. If using, add the Amaretto liqueur or rum to the coffee.",
+                    "Quickly dip each ladyfinger biscuit in the coffee (don't soak them too long) and arrange them in a single layer in your serving dish.",
+                    "Spread half of the mascarpone cream over the first layer of ladyfingers.",
+                    "Add another layer of coffee-dipped ladyfingers, then cover with the remaining cream.",
+                    "Dust the top generously with cocoa powder using a fine sieve.",
+                    "Refrigerate for at least 4 hours (preferably overnight) before serving to allow the flavors to meld together."
+                ]
+            },
+            pl: {
+                title: "Tiramisu",
+                subtitle: "Klasyczny włoski deser",
+                ingredientsTitle: "Składniki",
+                instructionsTitle: "Przygotowanie",
+                labelServings: "Porcje",
+                labelTime: "Czas przygotowania",
+                labelChill: "Czas chłodzenia",
+                ingredients: {
+                    metric: [
+                        "500 g sera mascarpone",
+                        "4 jajka",
+                        "100 g cukru",
+                        "200 g biszkoptów podłużnych (savoiardi)",
+                        "250 ml kawy espresso (3 łyżeczki kawy rozpuszczalnej lub 3 espresso z ekspresu)",
+                        "2 łyżki likieru Amaretto lub rumu (opcjonalnie)",
+                        "Kakao do posypania"
+                    ],
+                    imperial: [
+                        "17.6 oz (około 2 filiżanki) sera mascarpone",
+                        "4 jajka",
+                        "½ filiżanki cukru",
+                        "7 oz biszkoptów podłużnych (savoiardi)",
+                        "1 filiżanka kawy espresso (3 łyżeczki kawy rozpuszczalnej lub 3 espresso z ekspresu)",
+                        "2 łyżki likieru Amaretto lub rumu (opcjonalnie)",
+                        "Kakao do posypania"
+                    ]
+                },
+                instructions: [
+                    "Oddziel białka od żółtek do dwóch osobnych misek.",
+                    "Ubij białka na sztywną pianę, stopniowo dodając połowę cukru (50g) podczas ubijania.",
+                    "W osobnej misce wymieszaj żółtka z pozostałym cukrem i serem mascarpone, aż otrzymasz gładką, kremową masę.",
+                    "Delikatnie wmieszaj ubitą pianę z białek do masy z żółtek i mascarpone, mieszając ruchem od góry do dołu, aby zachować puszystą konsystencję.",
+                    "Przygotuj kawę i pozwól jej ostygnąć. Jeśli używasz, dodaj likier Amaretto lub rum do kawy.",
+                    "Szybko macz każdy biszkopt w kawie (nie namaczaj ich zbyt długo) i ułóż je w pojedynczej warstwie w naczyniu do serwowania.",
+                    "Rozłóż połowę kremu mascarpone na pierwszej warstwie biszkoptów.",
+                    "Dodaj kolejną warstwę biszkoptów moczonych w kawie, następnie przykryj pozostałym kremem.",
+                    "Obficie posyp wierzch kakao, używając drobnego sitka.",
+                    "Wstaw do lodówki na co najmniej 4 godziny (najlepiej na noc) przed podaniem, aby smaki mogły się ze sobą połączyć."
+                ]
+            }
+        };
+
+        let currentLang = 'pl';
+        let currentUnit = 'metric';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-pl').classList.toggle('active', lang === 'pl');
+            updateContent();
+        }
+
+        function setUnit(unit) {
+            currentUnit = unit;
+            document.getElementById('btn-metric').classList.toggle('active', unit === 'metric');
+            document.getElementById('btn-imperial').classList.toggle('active', unit === 'imperial');
+            updateContent();
+        }
+
+        function updateContent() {
+            const t = translations[currentLang];
+
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('ingredients-title').textContent = t.ingredientsTitle;
+            document.getElementById('instructions-title').textContent = t.instructionsTitle;
+            document.getElementById('label-servings').textContent = t.labelServings;
+            document.getElementById('label-time').textContent = t.labelTime;
+            document.getElementById('label-chill').textContent = t.labelChill;
+
+            const ingredientsList = document.getElementById('ingredients-list');
+            ingredientsList.innerHTML = '';
+            t.ingredients[currentUnit].forEach(ingredient => {
+                const li = document.createElement('li');
+                li.textContent = ingredient;
+                ingredientsList.appendChild(li);
+            });
+
+            const instructionsList = document.getElementById('instructions-list');
+            instructionsList.innerHTML = '';
+            t.instructions.forEach(instruction => {
+                const li = document.createElement('li');
+                li.textContent = instruction;
+                instructionsList.appendChild(li);
+            });
+        }
+
+        updateContent();
+    </script>
+</body>
+</html>
